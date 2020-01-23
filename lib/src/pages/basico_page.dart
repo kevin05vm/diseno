@@ -11,7 +11,7 @@ class BasicoPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            _crearImagen(),
+            _crearImagen(context),
             _crearTitulo(),
             _crearAcciones(),
             _crearTexto(),
@@ -23,13 +23,16 @@ class BasicoPage extends StatelessWidget {
     );
   }
 
-  Widget _crearImagen() {
+  Widget _crearImagen(BuildContext context) {
     return Container(
       width: double.infinity,
-      child: Image(
-        image: NetworkImage('https://images.pexels.com/photos/814499/pexels-photo-814499.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
-        fit: BoxFit.cover,
-        height: 200.0
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, 'scroll'),
+        child: Image(
+          image: NetworkImage('https://images.pexels.com/photos/814499/pexels-photo-814499.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
+          fit: BoxFit.cover,
+          height: 200.0
+        ),
       )
     );
   }
