@@ -94,7 +94,7 @@ class BotonesPage extends StatelessWidget {
       ),
       child: BottomNavigationBar(
         onTap: (i) {
-          Navigator.pushNamed(context, 'basico');
+          Navigator.pushNamed(context, 'ejemplo');
         },
         items: [
           BottomNavigationBarItem(
