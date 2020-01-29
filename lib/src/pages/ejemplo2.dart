@@ -2,78 +2,129 @@ import 'package:flutter/material.dart';
 
 import 'package:diseno/src/pages/models/comida.dart';
 
-class EjemploPage extends StatelessWidget {
+class EjemploPage2 extends StatefulWidget {
+  @override
+  _EjemploPage2State createState() => _EjemploPage2State();
+}
+
+class _EjemploPage2State extends State<EjemploPage2> {
 
   final _controller = ScrollController();
+  bool _showBoton = false;
 
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
+    _controller.addListener(() {
+      if(_controller.position.pixels <= 150) {
+        setState(() => _showBoton = false);
+      }
+      else {
+        if(!_showBoton) {
+          setState(() => _showBoton = true);
+        }
+      }
+    });
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          controller: _controller,
-          slivers: <Widget>[
-            _appBar(),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                _imagen(),
-                _categoriaTexto('Your Favorite'),
-                _crearLista1(Comida().cargarITems(), _screenSize),
-                _categoriaTexto('Restaurants'),
-                _crearLista2(Comida().cargarITems(), _screenSize),
-                SizedBox(height: 1200.0)
-              ])
+      body: Stack(
+        children: <Widget>[
+          _fondoApp(),
+          _menuApp(),
+          Container(
+            padding: EdgeInsets.only(top: 100.0),
+            child: SingleChildScrollView(
+              controller: _controller,
+              child: Column(
+                children: <Widget>[
+                  _imagen(),
+                  _categoriaTexto('Your Favorite'),
+                  _crearLista1(Comida().cargarITems(), _screenSize),
+                  _categoriaTexto('Restaurants'),
+                  _crearLista2(Comida().cargarITems(), _screenSize),
+                  SizedBox(height: 400.0)
+                ]
+              )
             ),
-          ]
-        ),
+          )
+        ]
       ),
-      floatingActionButton: SizedBox(
-        height: 35.0,
-        child: RaisedButton(
-          onPressed: (){
-            _controller.animateTo(
-              0.0,
-              curve: Curves.easeOut,
-              duration: const Duration(milliseconds: 1000),
-            );
-          },
-          elevation: 0.0,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(60.0)
-            )
+      floatingActionButton: Visibility(
+        visible: _showBoton,
+        child: SizedBox(
+          height: 35.0,
+          child: RaisedButton(
+            onPressed: (){
+              _controller.animateTo(
+                0.0,
+                curve: Curves.easeOut,
+                duration: const Duration(milliseconds: 500),
+              );
+            },
+            elevation: 0.0,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(60.0)
+              )
+            ),
+            color: Colors.yellowAccent,
+            child: Icon(Icons.keyboard_arrow_up, color: Colors.black, size: 45.0),
           ),
-          color: Colors.yellowAccent,
-          child: Icon(Icons.keyboard_arrow_up, color: Colors.black, size: 45.0),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked
     );
   }
 
-  Widget _appBar() {
-    return SliverAppBar(
-      leading: IconButton(
-        icon: Icon(Icons.menu, color: Colors.black),
-        onPressed: () {}
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.search, color: Colors.black),
-          onPressed: () {}
+  Widget _fondoApp() {
+    final figura = Ink(
+      height: 385.0,
+      width: 385.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(360.0),
+        gradient: LinearGradient(
+          colors: [
+            Colors.yellowAccent,
+            Colors.yellowAccent
+          ]
         )
-      ],
-      elevation: 0.0,
-      backgroundColor: Colors.yellowAccent,
-      expandedHeight: 0.0,
-      floating: true,
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle: true,
-        title: Text('Home', style: TextStyle(color: Colors.black, fontSize: 20.0))
       )
+    );
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: -30.0,
+          left: 110.0,
+          child: figura
+        )
+      ]
+    );
+  }
+
+  Widget _menuApp() {
+    return Stack(
+      children: <Widget>[
+        SafeArea(
+          child: Container(
+            child: ListTile(
+              leading: IconButton(
+                icon: Icon(Icons.menu),
+                color: Colors.black,
+                iconSize: 30.0, 
+                onPressed: () {},   
+              ),
+              title: Text('Home', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, color: Colors.black)),
+              trailing: IconButton(
+                icon: Icon(Icons.search),
+                color: Colors.black,
+                iconSize: 30.0,
+                onPressed: () {},   
+              )
+            )
+          )
+        )
+      ]
     );
   }
 
@@ -91,15 +142,16 @@ class EjemploPage extends StatelessWidget {
       child: Center(
         child: Stack(
           children: <Widget>[
-            Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Container(
                 child: FadeInImage(
                   height: 200.0,
                   image: NetworkImage('https://www.infobae.com/new-resizer/_TL4MD_ySzL3xj3ZfNkNxTgMYtY=/750x0/filters:quality(100)/s3.amazonaws.com/arc-wordpress-client-uploads/infobae-wp/wp-content/uploads/2016/06/14140637/PastasP.jpg'),
                   placeholder: AssetImage('assets/no-image.jpg'),
+                  fit: BoxFit.cover,
                 )
-              )
+              ),
             ),
             Container(
               height: 210.0,
@@ -127,6 +179,7 @@ class EjemploPage extends StatelessWidget {
       fontSize: 18.0
     );
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.only(top: 10.0, left: 30.0, bottom: 30.0),
       child: Text(texto, style: estilo)
     );
@@ -134,7 +187,7 @@ class EjemploPage extends StatelessWidget {
 
   Widget _crearLista1(List<Comida> comida, Size tamano) {
     return Container(
-      height: tamano.height * 0.2,
+      height: tamano.height * 0.24,
       child: PageView.builder(
         pageSnapping: false,
         controller: PageController(
@@ -173,12 +226,12 @@ class EjemploPage extends StatelessWidget {
 
   Widget _crearLista2(List<Comida> comida, Size tamano) {
     return Container(
-      height: tamano.height * 0.38,
+      height: tamano.height * 0.45,
       child: PageView.builder(
         pageSnapping: false,
         controller: PageController(
           viewportFraction: 0.80,
-          initialPage: 1
+          initialPage: 0
         ),
         itemCount: comida.length,
         itemBuilder: (context, i) => Padding(
